@@ -1,0 +1,198 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户表
+model User {
+  id           Int            @id @default(autoincrement())
+  username     String         @unique
+  password     String
+  nickName     String
+  email        String?        @unique @default("")
+  phone        String?        @unique @default("")
+  gender       Int?           @default(0) // 0-未知 1-男 2-女
+  status       Int?           @default(1) // 1-正常 0-禁用
+  avatar       String?        @default("")
+  remark       String?        @default("")
+  loginDate    DateTime?
+  loginIp      String?        @default("")
+  roles        Role[]         @relation("UserToRole")
+  deptId       Int?
+  dept         Dept?          @relation(fields: [deptId], references: [id])
+  posts        Post[]         @relation("UserToPost")
+  loginLogs    LoginLog[]
+  OperationLog OperationLog[]
+  File         File[]
+  createBy     String?
+  updateBy     String?
+  createTime   DateTime       @default(now())
+  updateTime   DateTime       @updatedAt
+}
+
+// 角色表
+model Role {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  code       String   @unique
+  status     Int?     @default(1) // 1-正常 0-禁用
+  remark     String?  @default("")
+  users      User[]   @relation("UserToRole")
+  menus      Menu[]   @relation("RoleToMenu")
+  createBy   String?
+  updateBy   String?
+  createTime DateTime @default(now())
+  updateTime DateTime @updatedAt
+}
+
+// 部门表
+model Dept {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  status     Int?     @default(1) // 1-正常 0-禁用
+  sort       Int?     @default(0) // 排序
+  phone      String?  @default("")
+  email      String?  @default("")
+  principal  String?  @default("")
+  remark     String?  @default("")
+  parentId   Int?
+  parent     Dept?    @relation("DeptHierarchy", fields: [parentId], references: [id])
+  children   Dept[]   @relation("DeptHierarchy")
+  users      User[]
+  createBy   String?
+  updateBy   String?
+  createTime DateTime @default(now())
+  updateTime DateTime @updatedAt
+
+  @@map("department")
+}
+
+// 岗位表
+model Post {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  code       String   @unique
+  sort       Int?     @default(0) // 排序
+  status     Int?     @default(1) // 1-正常 0-禁用
+  remark     String?  @default("")
+  users      User[]   @relation("UserToPost")
+  createBy   String?
+  updateBy   String?
+  createTime DateTime @default(now())
+  updateTime DateTime @updatedAt
+}
+
+// 菜单表
+model Menu {
+  id              Int      @id @default(autoincrement())
+  menuType        Int      @default(0) //菜单类型（`0`代表菜单、`1`代表`iframe`、`2`代表外链、`3`代表按钮）
+  title           String?  @default("") //菜单名称
+  name            String?  @default("") //路由名称
+  path            String?  @default("") //路由路径
+  component       String?  @default("") //组件路径
+  rank            Int?     @default(0) //菜单排序
+  redirect        String?  @default("") //路由重定向
+  icon            String?  @default("") //菜单图标
+  extraIcon       String?  @default("") //右侧图标
+  enterTransition String?  @default("") //进场动画
+  leaveTransition String?  @default("") //离场动画
+  activePath      String?  @default("") //菜单激活
+  auths           String?  @default("") //权限标识
+  frameSrc        String?  @default("") //链接地址
+  frameLoading    Boolean  @default(true) //加载动画
+  keepAlive       Boolean  @default(false) //缓存页面
+  hiddenTag       Boolean  @default(false) //标签页
+  fixedTag        Boolean  @default(false) //固定标签页
+  showLink        Boolean  @default(true) //菜单（是否显示该菜单）
+  showParent      Boolean  @default(false) //父级菜单
+  parentId        Int?     @default(0)
+  parent          Menu?    @relation("MenuHierarchy", fields: [parentId], references: [id])
+  children        Menu[]   @relation("MenuHierarchy")
+  roles           Role[]   @relation("RoleToMenu")
+  createBy        String?
+  updateBy        String?
+  createTime      DateTime @default(now())
+  updateTime      DateTime @updatedAt
+
+  @@map("menu")
+}
+
+// 登录日志
+model LoginLog {
+  id        Int      @id @default(autoincrement())
+  ip        String?
+  address   String?
+  browser   String?
+  os        String?
+  status    Int      @default(1) // 1-成功 0-失败
+  msg       String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  loginTime DateTime @default(now())
+}
+
+// 操作日志
+model OperationLog {
+  id            Int      @id @default(autoincrement())
+  module        String?
+  type          String? // 操作类型
+  method        String?
+  requestUrl    String?
+  params        Json?
+  response      Json?
+  ip            String?
+  address       String?
+  status        Int?     @default(1) // 1-成功 0-失败
+  errorMsg      String?
+  operationTime DateTime @default(now())
+  userId        Int?
+  user          User?    @relation(fields: [userId], references: [id])
+}
+
+// 字典类型
+model DictType {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  code      String     @unique
+  status    Int        @default(1) // 1-正常 0-禁用
+  remark    String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  dictDatas DictData[]
+}
+
+// 字典数据
+model DictData {
+  id         Int      @id @default(autoincrement())
+  dictTypeId Int
+  dictType   DictType @relation(fields: [dictTypeId], references: [id])
+  label      String
+  value      String
+  sort       Int      @default(0)
+  status     Int      @default(1) // 1-正常 0-禁用
+  remark     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// 文件上传记录
+model File {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String
+  size      Int
+  type      String
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}

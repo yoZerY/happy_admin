@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `user` MODIFY `gender` INTEGER NULL DEFAULT 0;

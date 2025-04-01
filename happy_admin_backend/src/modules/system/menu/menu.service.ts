@@ -1,0 +1,657 @@
+import { Injectable } from '@nestjs/common'
+import { UpdateMenuDto } from './dto/update-menu.dto'
+import { CreateMenuDto } from './dto/create-menu.dto'
+
+@Injectable()
+export class MenuService {
+  roleMenu() {
+    return [
+      // 权限管理
+      {
+        parentId: 0,
+        id: 200,
+        menuType: 0,
+        title: 'menus.purePermission'
+      },
+      {
+        parentId: 200,
+        id: 201,
+        menuType: 0,
+        title: 'menus.purePermissionPage'
+      },
+      {
+        parentId: 200,
+        id: 202,
+        menuType: 0,
+        title: 'menus.purePermissionButton'
+      },
+      {
+        parentId: 202,
+        id: 203,
+        menuType: 3,
+        title: '添加'
+      },
+      {
+        parentId: 202,
+        id: 204,
+        menuType: 3,
+        title: '修改'
+      },
+      {
+        parentId: 202,
+        id: 205,
+        menuType: 3,
+        title: '删除'
+      },
+      // 系统管理
+      {
+        parentId: 0,
+        id: 300,
+        menuType: 0,
+        title: 'menus.pureSysManagement'
+      },
+      {
+        parentId: 300,
+        id: 301,
+        menuType: 0,
+        title: 'menus.pureUser'
+      },
+      {
+        parentId: 300,
+        id: 302,
+        menuType: 0,
+        title: 'menus.pureRole'
+      },
+      {
+        parentId: 300,
+        id: 303,
+        menuType: 0,
+        title: 'menus.pureSystemMenu'
+      },
+      {
+        parentId: 300,
+        id: 304,
+        menuType: 0,
+        title: 'menus.pureDept'
+      },
+      // 系统监控
+      {
+        parentId: 0,
+        id: 400,
+        menuType: 0,
+        title: 'menus.pureSysMonitor'
+      },
+      {
+        parentId: 400,
+        id: 401,
+        menuType: 0,
+        title: 'menus.pureOnlineUser'
+      },
+      {
+        parentId: 400,
+        id: 402,
+        menuType: 0,
+        title: 'menus.pureLoginLog'
+      },
+      {
+        parentId: 400,
+        id: 403,
+        menuType: 0,
+        title: 'menus.pureOperationLog'
+      },
+      {
+        parentId: 400,
+        id: 404,
+        menuType: 0,
+        title: 'menus.pureSystemLog'
+      }
+    ]
+  }
+
+  roleMenuIds(id: number) {
+    if (id === 1) {
+      return [
+        100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 200, 201, 202,
+        203, 204, 205, 300, 301, 302, 303, 304, 400, 401, 402, 403, 404, 500,
+        501, 502, 503
+      ]
+    } else if (id === 2) {
+      return [
+        100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 404, 500, 501,
+        502, 503
+      ]
+    }
+  }
+
+  create(menu: CreateMenuDto) {
+    console.log(menu)
+  }
+
+  list() {
+    return [
+      // 权限管理
+      {
+        parentId: 0,
+        id: 200,
+        menuType: 0,
+        title: 'menus.purePermission',
+        name: 'PurePermission',
+        path: '/permission',
+        component: '',
+        rank: 9,
+        redirect: '',
+        icon: 'ep:lollipop',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 200,
+        id: 201,
+        menuType: 0,
+        title: 'menus.purePermissionPage',
+        name: 'PermissionPage',
+        path: '/permission/page/index',
+        component: '',
+        rank: null,
+        redirect: '',
+        icon: '',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 200,
+        id: 202,
+        menuType: 0,
+        title: 'menus.purePermissionButton',
+        name: 'PermissionButton',
+        path: '/permission/button',
+        component: '',
+        rank: null,
+        redirect: '',
+        icon: '',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 202,
+        id: 203,
+        menuType: 0,
+        title: 'menus.purePermissionButtonRouter',
+        name: 'PermissionButtonRouter',
+        path: '/permission/button/router',
+        component: 'permission/button/index',
+        rank: null,
+        redirect: '',
+        icon: '',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 203,
+        id: 210,
+        menuType: 3,
+        title: '添加',
+        name: '',
+        path: '',
+        component: '',
+        rank: null,
+        redirect: '',
+        icon: '',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: 'permission:btn:add',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 203,
+        id: 211,
+        menuType: 3,
+        title: '修改',
+        name: '',
+        path: '',
+        component: '',
+        rank: null,
+        redirect: '',
+        icon: '',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: 'permission:btn:edit',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 203,
+        id: 212,
+        menuType: 3,
+        title: '删除',
+        name: '',
+        path: '',
+        component: '',
+        rank: null,
+        redirect: '',
+        icon: '',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: 'permission:btn:delete',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 202,
+        id: 204,
+        menuType: 0,
+        title: 'menus.purePermissionButtonLogin',
+        name: 'PermissionButtonLogin',
+        path: '/permission/button/login',
+        component: 'permission/button/perms',
+        rank: null,
+        redirect: '',
+        icon: '',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 204,
+        id: 220,
+        menuType: 3,
+        title: '添加',
+        name: '',
+        path: '',
+        component: '',
+        rank: null,
+        redirect: '',
+        icon: '',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: 'permission:btn:add',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 204,
+        id: 221,
+        menuType: 3,
+        title: '修改',
+        name: '',
+        path: '',
+        component: '',
+        rank: null,
+        redirect: '',
+        icon: '',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: 'permission:btn:edit',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 204,
+        id: 222,
+        menuType: 3,
+        title: '删除',
+        name: '',
+        path: '',
+        component: '',
+        rank: null,
+        redirect: '',
+        icon: '',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: 'permission:btn:delete',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      // 系统管理
+      {
+        parentId: 0,
+        id: 300,
+        menuType: 0,
+        title: 'menus.pureSysManagement',
+        name: 'PureSystem',
+        path: '/system',
+        component: '',
+        rank: 10,
+        redirect: '',
+        icon: 'ri:settings-3-line',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 300,
+        id: 301,
+        menuType: 0,
+        title: 'menus.pureUser',
+        name: 'SystemUser',
+        path: '/system/user/index',
+        component: '',
+        rank: null,
+        redirect: '',
+        icon: 'ri:admin-line',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 300,
+        id: 302,
+        menuType: 0,
+        title: 'menus.pureRole',
+        name: 'SystemRole',
+        path: '/system/role/index',
+        component: '',
+        rank: null,
+        redirect: '',
+        icon: 'ri:admin-fill',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 300,
+        id: 303,
+        menuType: 0,
+        title: 'menus.pureSystemMenu',
+        name: 'SystemMenu',
+        path: '/system/menu/index',
+        component: '',
+        rank: null,
+        redirect: '',
+        icon: 'ep:menu',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 300,
+        id: 304,
+        menuType: 0,
+        title: 'menus.pureDept',
+        name: 'SystemDept',
+        path: '/system/dept/index',
+        component: '',
+        rank: null,
+        redirect: '',
+        icon: 'ri:git-branch-line',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      // 系统监控
+      {
+        parentId: 0,
+        id: 400,
+        menuType: 0,
+        title: 'menus.pureSysMonitor',
+        name: 'PureMonitor',
+        path: '/monitor',
+        component: '',
+        rank: 11,
+        redirect: '',
+        icon: 'ep:monitor',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 400,
+        id: 401,
+        menuType: 0,
+        title: 'menus.pureOnlineUser',
+        name: 'OnlineUser',
+        path: '/monitor/online-user',
+        component: 'monitor/online/index',
+        rank: null,
+        redirect: '',
+        icon: 'ri:user-voice-line',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 400,
+        id: 402,
+        menuType: 0,
+        title: 'menus.pureLoginLog',
+        name: 'LoginLog',
+        path: '/monitor/login-logs',
+        component: 'monitor/logs/login/index',
+        rank: null,
+        redirect: '',
+        icon: 'ri:window-line',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 400,
+        id: 403,
+        menuType: 0,
+        title: 'menus.pureOperationLog',
+        name: 'OperationLog',
+        path: '/monitor/operation-logs',
+        component: 'monitor/logs/operation/index',
+        rank: null,
+        redirect: '',
+        icon: 'ri:history-fill',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      },
+      {
+        parentId: 400,
+        id: 404,
+        menuType: 0,
+        title: 'menus.pureSystemLog',
+        name: 'SystemLog',
+        path: '/monitor/system-logs',
+        component: 'monitor/logs/system/index',
+        rank: null,
+        redirect: '',
+        icon: 'ri:file-search-line',
+        extraIcon: '',
+        enterTransition: '',
+        leaveTransition: '',
+        activePath: '',
+        auths: '',
+        frameSrc: '',
+        frameLoading: true,
+        keepAlive: false,
+        hiddenTag: false,
+        fixedTag: false,
+        showLink: true,
+        showParent: false
+      }
+    ]
+  }
+
+  findAll() {
+    return `This action returns all menu`
+  }
+
+  findOne(id: number) {
+    return `This action returns a #${id} menu`
+  }
+
+  update(id: number, updateMenuDto: UpdateMenuDto) {
+    return `This action updates a #${id} menu`
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} menu`
+  }
+}

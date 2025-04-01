@@ -1,0 +1,8 @@
+export const OPERATION_TYPE = {
+  CREATE: "CREATE",
+  EDIT: "EDIT",
+  VIEW: "VIEW",
+  DELETE: "DELETE",
+  DOWNLOAD: "DOWNLOAD",
+  UPLOAD: "UPLOAD"
+};

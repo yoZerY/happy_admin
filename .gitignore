@@ -1,0 +1,3 @@
+/happy_admin_backend/dist
+**/node_modules
+.idea
