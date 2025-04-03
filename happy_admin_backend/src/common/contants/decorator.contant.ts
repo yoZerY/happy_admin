@@ -1,3 +1,6 @@
+/* JWTsecret */
+export const JWT_SECRET = 'common:jwt:secret'
+
 /* 保持原数据返回 */
 export const KEEP_KEY = 'common:keep'
 

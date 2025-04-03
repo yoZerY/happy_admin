@@ -100,7 +100,6 @@ export class RoleService {
         roles: true
       }
     })
-    console.log(list)
     return list
   }
 

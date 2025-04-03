@@ -27,13 +27,15 @@ export const handleTree = (
   const tree: any[] = []
 
   for (const d of data) {
-    console.log(d)
+    const roleIds = d.roles.map((role) => role.code)
     d.meta = {
       title: d.title,
       icon: d.icon,
       name: d.name,
-      roels: d.roles.map((role) => role.code)
+      roles: roleIds
     }
+    d.rolesList = d.roles
+    d.roles = roleIds
     const parentId = d[config.parentId]
     if (childrenListMap[parentId] == null) {
       childrenListMap[parentId] = []

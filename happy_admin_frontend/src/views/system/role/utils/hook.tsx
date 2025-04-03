@@ -182,7 +182,6 @@ export function useRole(treeRef: Ref) {
       pageSize: pagination.pageSize,
       ...toRaw(form)
     });
-    console.log(data);
     dataList.value = data.list;
     pagination.total = data.totalCount;
 
@@ -260,8 +259,6 @@ export function useRole(treeRef: Ref) {
   /** 菜单权限-保存 */
   function handleSave() {
     const { id, name } = curRow.value;
-    // 根据用户 id 调用实际项目中菜单权限修改接口
-    console.log(id, treeRef.value.getCheckedKeys());
     setRoleMenus({
       id,
       ids: treeRef.value.getCheckedKeys()

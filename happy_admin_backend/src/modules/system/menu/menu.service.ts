@@ -34,7 +34,6 @@ export class MenuService {
   }
 
   async update(menu) {
-    console.log(menu)
     return await this.prisma.menu.update({
       where: {
         id: menu.id

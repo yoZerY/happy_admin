@@ -1,14 +1,16 @@
 import { Body, Controller, Get, Post } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginDto } from './dto/login.dto'
+import { Public } from '../../common/decorators/public.decorator'
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('login')
-  login(@Body() user: LoginDto) {
-    return this.authService.login(user)
+  @Public()
+  @Post('signIn')
+  signIn(@Body() user: LoginDto) {
+    return this.authService.signIn(user)
   }
 
   @Get('get-async-routes')

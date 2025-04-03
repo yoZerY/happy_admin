@@ -56,7 +56,7 @@ export type UserInfoResult = {
 
 /** 登录 */
 export const getLogin = (data?: object) => {
-  return http.request<UserResult>("post", "/auth/login", { data });
+  return http.request<UserResult>("post", "/auth/signIn", { data });
 };
 
 /** 刷新`token` */

@@ -10,10 +10,8 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'nickName不能为空' })
   nickName: string
 
-  @IsNotEmpty({ message: 'phone不能为空' })
   phone?: string
 
-  @IsNotEmpty({ message: 'email不能为空' })
   email?: string
 
   gender?: number

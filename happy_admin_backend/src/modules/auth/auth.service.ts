@@ -2,37 +2,70 @@ import { Injectable } from '@nestjs/common'
 import { LoginDto } from './dto/login.dto'
 import { PrismaService } from 'nestjs-prisma'
 import { handleTree } from '../../utils'
+import { ApiException } from '../../common/exceptions/api.exception'
+import * as bcrypt from 'bcryptjs'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private jwtService: JwtService
+  ) {}
 
-  login(user: LoginDto) {
-    if (user.username === 'admin') {
-      return {
-        avatar: 'https://avatars.githubusercontent.com/u/44761321',
-        username: 'admin',
-        nickname: '小铭',
-        // 一个用户可能有多个角色
-        roles: ['admin'],
-        // 按钮级别权限
-        permissions: ['*:*:*'],
-        accessToken: 'eyJhbGciOiJIUzUxMiJ9.admin',
-        refreshToken: 'eyJhbGciOiJIUzUxMiJ9.adminRefresh',
-        expires: '2030/10/30 00:00:00'
+  async genToken(payload) {
+    return await this.jwtService.signAsync(payload)
+  }
+
+  async signIn(user: LoginDto) {
+    const existUser = await this.prisma.user.findUnique({
+      where: { username: user.username },
+      include: {
+        dept: true,
+        roles: true
       }
-    } else {
-      return {
-        avatar: 'https://avatars.githubusercontent.com/u/52823142',
-        username: 'common',
-        nickname: '小林',
-        roles: ['common'],
-        permissions: ['permission:btn:add', 'permission:btn:edit'],
-        accessToken: 'eyJhbGciOiJIUzUxMiJ9.common',
-        refreshToken: 'eyJhbGciOiJIUzUxMiJ9.commonRefresh',
-        expires: '2030/10/30 00:00:00'
-      }
+    })
+    if (!existUser) throw new ApiException('用户名或密码错误', 400)
+    const isMatch = await bcrypt.compare(user.password, existUser.password)
+    if (!isMatch) throw new ApiException('用户名或密码错误', 400)
+    const payload = { sub: existUser.id, username: existUser.username }
+    const accessToken = await this.genToken(payload)
+    console.log('accessToken', accessToken)
+    const roles = existUser.roles.map((role) => role.code)
+    return {
+      ...existUser,
+      permissions: ['*:*:*'],
+      roles,
+      accessToken,
+      refreshToken: accessToken,
+      expires: '2030/10/30 00:00:00'
     }
+    // return existUser
+    // if (user.username === 'admin') {
+    //   return {
+    //     avatar: 'https://avatars.githubusercontent.com/u/44761321',
+    //     username: 'admin',
+    //     nickname: '小铭',
+    //     // 一个用户可能有多个角色
+    //     roles: ['admin'],
+    //     // 按钮级别权限
+    //     permissions: ['*:*:*'],
+    //     accessToken: 'eyJhbGciOiJIUzUxMiJ9.admin',
+    //     refreshToken: 'eyJhbGciOiJIUzUxMiJ9.adminRefresh',
+    //     expires: '2030/10/30 00:00:00'
+    //   }
+    // } else {
+    //   return {
+    //     avatar: 'https://avatars.githubusercontent.com/u/52823142',
+    //     username: 'common',
+    //     nickname: '小林',
+    //     roles: ['common'],
+    //     permissions: ['permission:btn:add', 'permission:btn:edit'],
+    //     accessToken: 'eyJhbGciOiJIUzUxMiJ9.common',
+    //     refreshToken: 'eyJhbGciOiJIUzUxMiJ9.commonRefresh',
+    //     expires: '2030/10/30 00:00:00'
+    //   }
+    // }
   }
 
   async getAsyncRoutes() {

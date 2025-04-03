@@ -4,6 +4,8 @@ import { UpdateUserDto } from './dto/update-user.dto'
 import { CustomPrismaService, PrismaService } from 'nestjs-prisma'
 import { type ExtendedPrismaClient } from '../../../shared/prisma/prisma.extension'
 import { CUSTOMPRISMASERVICE } from '../../../common/contants'
+import { ApiException } from '../../../common/exceptions/api.exception'
+import * as bcrypt from 'bcryptjs'
 
 @Injectable()
 export class UserService {
@@ -38,14 +40,33 @@ export class UserService {
   }
 
   async create(info: CreateUserDto) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        username: info.username
+      }
+    })
+    if (user) throw new ApiException(`User already exists`)
+    // 加密密码
+    const salt = await bcrypt.genSalt(10)
+    const saltPwd = await bcrypt.hash(info.password, salt)
+
     const { roles, ...args } = info
     return await this.prisma.user.create({
       data: {
         ...args,
+        password: saltPwd,
         roles: {
           connect: roles.map((role) => ({ id: role }))
         }
       }
+    })
+  }
+
+  async delete(id: number) {
+    const user = await this.prisma.user.findUnique({ where: { id } })
+    if (!user) throw new ApiException(`User with id ${id} not found`, 400)
+    return await this.prisma.user.delete({
+      where: { id }
     })
   }
 

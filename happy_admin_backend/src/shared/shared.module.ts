@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common'
 import { SharedService } from './shared.service'
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
 import { AllExceptionsFilter } from '../common/filters/http-exceptions-filter'
 import { ReponseTransformInterceptor } from '../common/interceptors/reponse-transform.interceptor'
 import { CustomPrismaModule, PrismaModule } from 'nestjs-prisma'
 import { PrismaConfigService } from './prisma/prisma.config.service'
 import { ExtendedPrismaConfigService } from './prisma/extended.prisma.config.service'
 import { CUSTOMPRISMASERVICE } from '../common/contants'
+import { JwtAuthGuard } from '../common/guard/jwt-auth.guard'
 
 @Module({
   imports: [
@@ -31,6 +32,10 @@ import { CUSTOMPRISMASERVICE } from '../common/contants'
     {
       provide: APP_INTERCEPTOR,
       useClass: ReponseTransformInterceptor
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
     }
   ]
 })

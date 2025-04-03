@@ -25,6 +25,11 @@ export class UserController {
     return this.userService.create(createUserDto)
   }
 
+  @Post('delete')
+  delete(@Body() body: { id: number }) {
+    return this.userService.delete(body.id)
+  }
+
   @Get()
   findAll() {
     return this.userService.findAll()
