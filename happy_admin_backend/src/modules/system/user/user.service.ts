@@ -16,6 +16,11 @@ export class UserService {
   async list() {
     const [list, meta] = await this.prismaService.client.user
       .paginate({
+        orderBy: [
+          {
+            updateTime: 'desc'
+          }
+        ],
         include: {
           dept: true,
           roles: true
@@ -48,8 +53,17 @@ export class UserService {
     return `This action returns all user`
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`
+  async findOne(id: number) {
+    const userInfo = await this.prisma.user.findUnique({
+      where: {
+        id
+      },
+      include: {
+        dept: true,
+        roles: true
+      }
+    })
+    return userInfo
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

@@ -8,7 +8,7 @@ export type UserResult = {
     /** 用户名 */
     username: string;
     /** 昵称 */
-    nickname: string;
+    nickName: string;
     /** 当前登录用户的角色 */
     roles: Array<string>;
     /** 按钮级别权限 */
@@ -40,7 +40,7 @@ export type UserInfo = {
   /** 用户名 */
   username: string;
   /** 昵称 */
-  nickname: string;
+  nickName: string;
   /** 邮箱 */
   email: string;
   /** 联系电话 */
@@ -77,5 +77,5 @@ export const getMineLogs = (data?: object) => {
 };
 
 export const getAsyncRoutes = () => {
-  return http.request<Result>("get", "/auth/get-async-routes");
+  return http.request<ResultTable>("get", "/auth/get-async-routes");
 };

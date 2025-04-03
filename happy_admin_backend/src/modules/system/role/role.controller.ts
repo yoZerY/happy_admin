@@ -22,6 +22,11 @@ export class RoleController {
     return this.roleService.userRoleIds(body.userId)
   }
 
+  @Post('set-role-menus')
+  setRoleMenus(@Body() body: { id: number; ids: number[] }) {
+    return this.roleService.setRoleMenus(body)
+  }
+
   @Post('create')
   create(@Body() role: CreateRoleDto) {
     return this.roleService.create(role)

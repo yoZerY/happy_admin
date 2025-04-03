@@ -1,10 +1,8 @@
 export type Result = {
-  success: boolean;
   data?: Array<any>;
 };
 
 export type ResultTable = {
-  success: boolean;
   data?: {
     /** 列表数据 */
     list: Array<any>;
@@ -16,3 +14,7 @@ export type ResultTable = {
     currentPage?: number;
   };
 };
+
+export interface ResponseData<T> {
+  data: T;
+}

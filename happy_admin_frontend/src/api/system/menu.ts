@@ -1,5 +1,14 @@
-import { http } from "@/utils/http";
-import type { Result } from "@/api/types";
+import { http } from '@/utils/http'
+import type { Result } from '@/api/types'
+
+/** 获取系统管理-菜单管理列表 */
+export const createMenu = (data?: object) => {
+  return http.request<Result>("post", "/menu/create", { data });
+};
+
+export const updateMenu = (data?: object) => {
+  return http.request<Result>("post", "/menu/update", { data });
+};
 
 /** 获取系统管理-菜单管理列表 */
 export const getMenuList = (data?: object) => {

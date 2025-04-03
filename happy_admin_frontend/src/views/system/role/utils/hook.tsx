@@ -13,6 +13,7 @@ import {
   createRole,
   deleteRole,
   getRoleList,
+  setRoleMenus,
   updateRole
 } from "@/api/system/role";
 import { h, onMounted, reactive, type Ref, ref, toRaw, watch } from "vue";
@@ -261,8 +262,13 @@ export function useRole(treeRef: Ref) {
     const { id, name } = curRow.value;
     // 根据用户 id 调用实际项目中菜单权限修改接口
     console.log(id, treeRef.value.getCheckedKeys());
-    message(`角色名称为${name}的菜单权限修改成功`, {
-      type: "success"
+    setRoleMenus({
+      id,
+      ids: treeRef.value.getCheckedKeys()
+    }).then(() => {
+      message(`角色名称为${name}的菜单权限修改成功`, {
+        type: "success"
+      });
     });
   }
 

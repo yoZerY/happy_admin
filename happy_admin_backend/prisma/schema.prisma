@@ -115,7 +115,7 @@ model Menu {
   fixedTag        Boolean  @default(false) //固定标签页
   showLink        Boolean  @default(true) //菜单（是否显示该菜单）
   showParent      Boolean  @default(false) //父级菜单
-  parentId        Int?     @default(0)
+  parentId        Int?
   parent          Menu?    @relation("MenuHierarchy", fields: [parentId], references: [id])
   children        Menu[]   @relation("MenuHierarchy")
   roles           Role[]   @relation("RoleToMenu")

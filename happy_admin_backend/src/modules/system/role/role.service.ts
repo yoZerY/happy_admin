@@ -80,22 +80,48 @@ export class RoleService {
     })
   }
 
-  findAll() {
-    return [
-      { id: 1, name: '超级管理员' },
-      { id: 2, name: '普通角色' }
-    ]
+  async findAll() {
+    const list = await this.prisma.role.findMany({
+      where: {
+        status: 1
+      }
+    })
+    return {
+      list
+    }
   }
 
-  userRoleIds(id: number) {
-    if (id) {
-      if (id === 1) {
-        return [1]
-      } else if (id === 2) {
-        return [2]
+  async userRoleIds(id: number) {
+    const list = await this.prisma.user.findMany({
+      where: {
+        id
+      },
+      include: {
+        roles: true
       }
-    } else {
-      return []
-    }
+    })
+    console.log(list)
+    return list
+  }
+
+  async setRoleMenus(body: { id: number; ids: number[] }) {
+    const { id, ids } = body
+    await this.prisma.role.update({
+      where: { id: id },
+      data: {
+        menus: {
+          set: []
+        }
+      }
+    })
+
+    return await this.prisma.role.update({
+      where: { id: id },
+      data: {
+        menus: {
+          connect: ids.map((id) => ({ id }))
+        }
+      }
+    })
   }
 }

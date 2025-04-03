@@ -31,7 +31,7 @@ onBeforeMount(() => {
 const userInfo = ref({
   avatar: "",
   username: "",
-  nickname: ""
+  nickName: ""
 });
 const panes = [
   {
@@ -87,7 +87,7 @@ getMine().then(res => {
           <el-avatar :size="48" :src="userInfo.avatar" />
           <div class="ml-4 flex flex-col max-w-[130px]">
             <ReText class="font-bold !self-baseline">
-              {{ userInfo.nickname }}
+              {{ userInfo.nickName }}
             </ReText>
             <ReText class="!self-baseline" type="info">
               {{ userInfo.username }}

@@ -1,8 +1,5 @@
 interface FormItemProps {
   id?: number;
-  /** 用于判断是`新增`还是`修改` */
-  title: string;
-  higherDeptOptions: Record<string, unknown>[];
   deptId: number;
   nickName: string;
   username: string;
@@ -11,14 +8,15 @@ interface FormItemProps {
   email: string;
   gender: string | number;
   status: number;
-  dept?: {
-    id?: number;
-    name?: string;
-  };
   remark: string;
+  roles: any[];
 }
+
 interface FormProps {
-  formInline: FormItemProps;
+  userInfo: FormItemProps;
+  roleOptions: any[];
+  higherDeptOptions: any[];
+  opType: string;
 }
 
 interface RoleFormItemProps {
@@ -29,6 +27,7 @@ interface RoleFormItemProps {
   /** 选中的角色列表 */
   ids: Record<number, unknown>[];
 }
+
 interface RoleFormProps {
   formInline: RoleFormItemProps;
 }

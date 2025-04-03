@@ -85,6 +85,7 @@ function onFullscreen() {
         <pure-table
           ref="tableRef"
           adaptive
+          default-expand-all
           :adaptiveConfig="{ offsetBottom: 45 }"
           align-whole="center"
           row-key="id"

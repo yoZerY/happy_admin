@@ -46,9 +46,9 @@ export function useNav() {
 
   /** 昵称（如果昵称为空则显示用户名） */
   const username = computed(() => {
-    return isAllEmpty(useUserStoreHook()?.nickname)
+    return isAllEmpty(useUserStoreHook()?.nickName)
       ? useUserStoreHook()?.username
-      : useUserStoreHook()?.nickname;
+      : useUserStoreHook()?.nickName;
   });
 
   const avatarsStyle = computed(() => {

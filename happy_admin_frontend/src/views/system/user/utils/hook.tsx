@@ -17,7 +17,13 @@ import {
   hideTextAtIndex,
   isAllEmpty
 } from "@pureadmin/utils";
-import { createUser, getUserList } from "@/api/system/user";
+
+import {
+  createUser,
+  getUserInfo,
+  getUserList,
+  updateUser
+} from "@/api/system/user";
 import { getAllRoleList, getRoleIds } from "@/api/system/role";
 import { getAllDeptList } from "@/api/system/department";
 import {
@@ -37,6 +43,7 @@ import {
   toRaw,
   watch
 } from "vue";
+import { OPERATION_TYPE } from "@/constant";
 
 export function useUser(tableRef: Ref, treeRef: Ref) {
   const form = reactive({
@@ -50,6 +57,8 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
   const ruleFormRef = ref();
   const dataList = ref([]);
   const loading = ref(true);
+  const opType = ref("");
+  const isCreate = computed(() => opType.value === OPERATION_TYPE.CREATE);
   // 上传头像信息
   const avatarInfo = ref();
   const switchLoadMap = ref({});
@@ -63,6 +72,18 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
     pageSize: 10,
     currentPage: 1,
     background: true
+  });
+  let formData = reactive<FormItemProps>({
+    nickName: "",
+    username: "",
+    password: "",
+    phone: "",
+    email: "",
+    gender: null,
+    roles: [],
+    deptId: null,
+    status: 1,
+    remark: ""
   });
   const columns: TableColumnList = [
     {
@@ -146,10 +167,17 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
     },
     {
       label: "创建时间",
-      minWidth: 90,
+      width: 170,
       prop: "createTime",
       formatter: ({ createTime }) =>
         dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
+    },
+    {
+      label: "修改时间",
+      width: 170,
+      prop: "updateTime",
+      formatter: ({ updateTime }) =>
+        dayjs(updateTime).format("YYYY-MM-DD HH:mm:ss")
     },
     {
       label: "操作",
@@ -271,10 +299,9 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
     loading.value = true;
     const { data } = await getUserList(toRaw(form));
     dataList.value = data.list;
-    pagination.total = data.totalCount || 0;
+    pagination.total = data.totalCount;
     pagination.pageSize = data.pageSize;
     pagination.currentPage = data.currentPage;
-
     loading.value = false;
   }
 
@@ -303,53 +330,54 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
     return newTreeList;
   }
 
-  function openDialog(title = "新增", row?: FormItemProps) {
+  const openDialog = async (title = OPERATION_TYPE.CREATE, id: number) => {
+    opType.value = title;
+    if (!isCreate.value) {
+      const res = await getUserInfo(id);
+      formData = {
+        ...formData,
+        ...res.data,
+        roles: res.data.roles.map(i => i.id)
+      };
+    }
     addDialog({
-      title: `${title}用户`,
+      title: isCreate.value ? `新增用户` : "修改用户",
       props: {
-        formInline: {
-          title,
-          higherDeptOptions: formatHigherDeptOptions(higherDeptOptions.value),
-          deptId: row?.dept.id ?? 0,
-          nickName: row?.nickName ?? "",
-          username: row?.username ?? "",
-          password: row?.password ?? "",
-          phone: row?.phone ?? "",
-          email: row?.email ?? "",
-          gender: row?.gender ?? 0,
-          status: row?.status ?? 1,
-          remark: row?.remark ?? ""
-        }
+        userInfo: formData,
+        opType: opType.value,
+        roleOptions: roleOptions.value ?? [],
+        higherDeptOptions: formatHigherDeptOptions(higherDeptOptions.value)
       },
-      width: "46%",
+      width: "50%",
       draggable: true,
       fullscreen: deviceDetection(),
       fullscreenIcon: true,
       closeOnClickModal: false,
-      contentRenderer: () => h(editForm, { ref: formRef, formInline: null }),
+      contentRenderer: () =>
+        h(editForm, {
+          ref: formRef,
+          userInfo: formData,
+          opType: "",
+          roleOptions: [],
+          higherDeptOptions: []
+        }),
       beforeSure: (done, { options }) => {
         const FormRef = formRef.value.getRef();
-        const curData = options.props.formInline as FormItemProps;
+        const formData = formRef.value.formData;
 
+        console.log(formData);
         FormRef.validate(valid => {
           if (valid) {
-            console.log("curData", curData);
-            // 表单规则校验通过
-            if (title === "新增") {
-              delete curData.title;
-              delete curData.higherDeptOptions;
-              createUser({ ...curData, roles: [3] });
+            const fn = isCreate.value ? createUser : updateUser;
+            fn({ ...formData }).then(() => {
               done(); // 关闭弹框
               onSearch(); // 刷新表格数据
-            } else {
-              done(); // 关闭弹框
-              onSearch(); // 刷新表格数据
-            }
+            });
           }
         });
       }
     });
-  }
+  };
 
   const cropRef = ref();
 
@@ -485,18 +513,28 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
     });
   }
 
+  const queryAllDeptList = async () => {
+    // 归属部门
+    const {
+      data: { list = [] }
+    } = await getAllDeptList();
+    higherDeptOptions.value = handleTree(list);
+    treeData.value = handleTree(list);
+    treeLoading.value = false;
+  };
+
+  const queryAllRoleList = async () => {
+    // 角色列表
+    const {
+      data: { list = [] }
+    } = await getAllRoleList();
+    roleOptions.value = list;
+  };
   onMounted(async () => {
     treeLoading.value = true;
+    queryAllDeptList();
+    queryAllRoleList();
     onSearch();
-
-    // 归属部门
-    const { data } = await getAllDeptList();
-    higherDeptOptions.value = handleTree(data.list);
-    treeData.value = handleTree(data.list);
-    treeLoading.value = false;
-
-    // 角色列表
-    roleOptions.value = (await getAllRoleList()).data;
   });
 
   return {
