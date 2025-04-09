@@ -1,21 +1,23 @@
 import { HttpException } from '@nestjs/common'
 
 export class ApiException extends HttpException {
-  private errCode: number
+  private errorCode: number
 
-  constructor(msg: string, errCode?: number) {
+  constructor(message: string, errorCode?: number) {
     //权限问题一律使用401错误码
-    if (errCode && errCode == 401) {
-      super(msg, 200)
-      this.errCode = 401
+    if (errorCode && errorCode == 401) {
+      super(message, 200)
+      this.errorCode = 401
     } else {
       //其他异常一律使用500错误码
-      super(msg, errCode ?? 200)
-      this.errCode = errCode ?? 500
+      super(message, errorCode ?? 200)
+      this.errorCode = errorCode ?? 500
     }
+
+    this.name = ApiException.name
   }
 
-  getErrCode(): number {
-    return this.errCode
+  getErrorCode(): number {
+    return this.errorCode
   }
 }

@@ -119,6 +119,16 @@ class PureHttp {
     const instance = PureHttp.axiosInstance;
     instance.interceptors.response.use(
       (response: PureHttpResponse) => {
+        const code = response.data.code || 200;
+        const msg = response.data.message || "";
+        console.log("response", response);
+        if (code === 401) {
+          message("登录状态已过期，请重新登录", { type: "error" });
+          return useUserStoreHook().logOut();
+        } else if (code === 500) {
+          message(msg, { type: "error" });
+          return Promise.reject(new Error(msg));
+        }
         const $config = response.config;
         // 优先判断post/get等方法是否传入回调，否则执行初始化设置等回调
         if (typeof $config.beforeResponseCallback === "function") {
@@ -132,13 +142,12 @@ class PureHttp {
         return response.data;
       },
       (error: PureHttpError) => {
-        const {
-          status,
-          response: { data }
-        } = error;
-
-        if (status === 400) {
-          message((data as unknown as any).message, { type: "error" });
+        if (error.status === 400) {
+          const msg =
+            (error.response.data as unknown as any)?.message ||
+            "Internal server error";
+          message(msg, { type: "error" });
+          return Promise.reject(new Error(msg));
         }
         const $error = error;
         $error.isCancelRequest = Axios.isCancel($error);

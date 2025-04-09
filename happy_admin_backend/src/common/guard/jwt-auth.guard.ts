@@ -1,8 +1,8 @@
 import { ExecutionContext, Injectable } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { Reflector } from '@nestjs/core'
-import { ApiException } from '../exceptions/api.exception'
 import { PUBLIC_KEY } from '../contants/decorator.contant'
+import { ApiException } from '../exceptions/api.exception'
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -22,13 +22,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   /* 主动处理错误 */
-  handleRequest(err, user, info) {
-    console.log('user===============>>>>>>', user)
-    console.info(info)
-    if (err || !user || !user.username) {
+  handleRequest(err, user) {
+    if (err || !user) {
       throw err || new ApiException('登录状态已过期', 401)
     }
-    // 返回值会被挂载到request的user上
     return user
   }
 }

@@ -367,7 +367,6 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
       beforeSure: (done, { options }) => {
         const FormRef = formRef.value.getRef();
         const formData = formRef.value.formData;
-
         console.log(formData);
         FormRef.validate(valid => {
           if (valid) {

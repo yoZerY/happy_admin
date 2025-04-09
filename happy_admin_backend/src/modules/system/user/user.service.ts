@@ -64,7 +64,7 @@ export class UserService {
 
   async delete(id: number) {
     const user = await this.prisma.user.findUnique({ where: { id } })
-    if (!user) throw new ApiException(`User with id ${id} not found`, 400)
+    if (!user) throw new ApiException(`User with id ${id} not found`)
     return await this.prisma.user.delete({
       where: { id }
     })

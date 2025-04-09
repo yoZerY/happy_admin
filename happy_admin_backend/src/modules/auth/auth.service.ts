@@ -25,16 +25,21 @@ export class AuthService {
         roles: true
       }
     })
-    if (!existUser) throw new ApiException('用户名或密码错误', 400)
+    if (!existUser) throw new ApiException('用户名密码错误')
     const isMatch = await bcrypt.compare(user.password, existUser.password)
-    if (!isMatch) throw new ApiException('用户名或密码错误', 400)
-    const payload = { sub: existUser.id, username: existUser.username }
-    const accessToken = await this.genToken(payload)
-    console.log('accessToken', accessToken)
+    if (!isMatch) throw new ApiException('用户名密码错误')
+    const accessToken = await this.genToken({
+      ...existUser,
+      sub: existUser.id
+    })
     const roles = existUser.roles.map((role) => role.code)
+    let permissions: string[] = []
+    if (roles.includes('admin')) {
+      permissions = ['*:*:*']
+    }
     return {
       ...existUser,
-      permissions: ['*:*:*'],
+      permissions,
       roles,
       accessToken,
       refreshToken: accessToken,

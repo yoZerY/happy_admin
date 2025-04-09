@@ -49,13 +49,13 @@ export class RoleService {
   }
 
   async create(data: CreateRoleDto) {
-    const { name } = data
+    const { code } = data
     const existRole = await this.prisma.role.findUnique({
       where: {
-        name
+        code
       }
     })
-    if (existRole) throw new ApiException('Role already exists', 400)
+    if (existRole) throw new ApiException('Role already exists')
     return await this.prisma.role.create({
       data
     })

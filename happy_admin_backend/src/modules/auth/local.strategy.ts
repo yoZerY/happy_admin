@@ -2,6 +2,7 @@ import { Strategy } from 'passport-local'
 import { PassportStrategy } from '@nestjs/passport'
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { PrismaService } from 'nestjs-prisma'
+import { ApiException } from '../../common/exceptions/api.exception'
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -18,7 +19,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       }
     })
     if (!user) {
-      throw new UnauthorizedException()
+      throw new ApiException('用户名密码错误')
     }
     return user
   }
