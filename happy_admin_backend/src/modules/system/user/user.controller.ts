@@ -13,14 +13,10 @@ import { UserService } from './user.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { UploadService } from '../../../shared/upload/upload.service'
 
 @Controller('user')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly uploadService: UploadService
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post('list')
   list() {
@@ -63,9 +59,6 @@ export class UserController {
     @UploadedFile() file: Express.Multer.File,
     @Body() body: { id: number }
   ) {
-    const avatar = await this.uploadService.uploadFile(file)
-    if (avatar) {
-      await this.userService.uploadAvatar(Number(body.id), avatar)
-    }
+    await this.userService.uploadAvatar(file, Number(body.id))
   }
 }

@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcryptjs'
 import { Inject, Injectable } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -5,12 +6,13 @@ import { CustomPrismaService, PrismaService } from 'nestjs-prisma'
 import { type ExtendedPrismaClient } from '../../../shared/prisma/prisma.extension'
 import { CUSTOMPRISMASERVICE } from '../../../common/contants'
 import { ApiException } from '../../../common/exceptions/api.exception'
-import * as bcrypt from 'bcryptjs'
+import { UploadService } from '../../../shared/upload/upload.service'
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly uploadService: UploadService,
     @Inject(CUSTOMPRISMASERVICE)
     private prismaService: CustomPrismaService<ExtendedPrismaClient>
   ) {}
@@ -87,13 +89,16 @@ export class UserService {
     return userInfo
   }
 
-  async uploadAvatar(id: number, avatar: string) {
-    await this.prisma.user.update({
-      where: { id },
-      data: {
-        avatar
-      }
-    })
+  async uploadAvatar(file: Express.Multer.File, id: number) {
+    const avatar = await this.uploadService.uploadFile(file)
+    if (avatar) {
+      await this.prisma.user.update({
+        where: { id },
+        data: {
+          avatar
+        }
+      })
+    }
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
