@@ -87,6 +87,15 @@ export class UserService {
     return userInfo
   }
 
+  async uploadAvatar(id: number, avatar: string) {
+    await this.prisma.user.update({
+      where: { id },
+      data: {
+        avatar
+      }
+    })
+  }
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`
   }

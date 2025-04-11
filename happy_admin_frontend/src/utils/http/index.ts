@@ -121,7 +121,6 @@ class PureHttp {
       (response: PureHttpResponse) => {
         const code = response.data.code || 200;
         const msg = response.data.message || "";
-        console.log("response", response);
         if (code === 401) {
           message("登录状态已过期，请重新登录", { type: "error" });
           return useUserStoreHook().logOut();

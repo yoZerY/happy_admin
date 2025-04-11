@@ -21,3 +21,16 @@ export const getUserInfo = (id: number) => {
 export const deleteUser = (data?: object) => {
   return http.request<ResultTable>("post", "/user/delete", { data });
 };
+
+export const uploadAvatar = data => {
+  return http.request<any>(
+    "post",
+    `/user/uploadAvatar`,
+    { data },
+    {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    }
+  );
+};

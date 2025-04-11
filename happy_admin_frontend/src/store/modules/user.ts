@@ -37,7 +37,7 @@ export const useUserStore = defineStore("pure-user", {
   actions: {
     /** 存储头像 */
     SET_AVATAR(avatar: string) {
-      this.avatar = avatar;
+      this.avatar = `http://localhost:9000/happy-admin/${avatar}`;
     },
     /** 存储用户名 */
     SET_USERNAME(username: string) {

@@ -5,15 +5,22 @@ import {
   Get,
   Param,
   Patch,
-  Post
+  Post,
+  UploadedFile,
+  UseInterceptors
 } from '@nestjs/common'
 import { UserService } from './user.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { UploadService } from '../../../shared/upload/upload.service'
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly uploadService: UploadService
+  ) {}
 
   @Post('list')
   list() {
@@ -48,5 +55,17 @@ export class UserController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id)
+  }
+
+  @Post('uploadAvatar')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadAvatar(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: { id: number }
+  ) {
+    const avatar = await this.uploadService.uploadFile(file)
+    if (avatar) {
+      await this.userService.uploadAvatar(Number(body.id), avatar)
+    }
   }
 }

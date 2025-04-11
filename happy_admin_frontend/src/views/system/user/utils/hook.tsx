@@ -23,7 +23,8 @@ import {
   deleteUser,
   getUserInfo,
   getUserList,
-  updateUser
+  updateUser,
+  uploadAvatar
 } from "@/api/system/user";
 import { getAllRoleList, getRoleIds } from "@/api/system/role";
 import { getAllDeptList } from "@/api/system/department";
@@ -101,15 +102,19 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
     {
       label: "用户头像",
       prop: "avatar",
-      cellRenderer: ({ row }) => (
-        <el-image
-          fit="cover"
-          preview-teleported={true}
-          src={row.avatar || userAvatar}
-          preview-src-list={Array.of(row.avatar || userAvatar)}
-          class="w-[24px] h-[24px] rounded-full align-middle"
-        />
-      ),
+      cellRenderer: ({ row }) => {
+        const url = row.avatar
+          ? `http://localhost:9000/happy-admin/${row.avatar}`
+          : userAvatar;
+        return (
+          <el-image
+            fit="cover"
+            preview-teleported={true}
+            src={url}
+            preview-src-list={Array.of(url)}
+          />
+        );
+      },
       width: 90
     },
     {
@@ -385,6 +390,9 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
 
   /** 上传头像 */
   function handleUpload(row) {
+    const imgSrc = row.avatar
+      ? `http://localhost:9000/happy-admin/${row.avatar}`
+      : userAvatar;
     addDialog({
       title: "裁剪、上传头像",
       width: "40%",
@@ -393,14 +401,22 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
       contentRenderer: () =>
         h(ReCropperPreview, {
           ref: cropRef,
-          imgSrc: row.avatar || userAvatar,
+          imgSrc: imgSrc,
           onCropper: info => (avatarInfo.value = info)
         }),
       beforeSure: done => {
-        console.log("裁剪后的图片信息：", avatarInfo.value);
-        // 根据实际业务使用avatarInfo.value和row里的某些字段去调用上传头像接口即可
-        done(); // 关闭弹框
-        onSearch(); // 刷新表格数据
+        const { blob } = avatarInfo.value;
+        const file = new File([blob], `${row.id}avatar.png`, {
+          type: blob.type,
+          lastModified: new Date().getTime()
+        });
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("id", row.id);
+        uploadAvatar(formData).then(() => {
+          done(); // 关闭弹框
+          onSearch(); // 刷新表格数据
+        });
       },
       closeCallBack: () => cropRef.value.hidePopover()
     });

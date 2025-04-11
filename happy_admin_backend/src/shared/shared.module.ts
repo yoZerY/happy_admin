@@ -9,6 +9,8 @@ import { ExtendedPrismaConfigService } from './prisma/extended.prisma.config.ser
 import { CUSTOMPRISMASERVICE } from '../common/contants'
 import { JwtAuthGuard } from '../common/guard/jwt-auth.guard'
 import { AuthGuard } from '../common/guard/auth.guard'
+import { MinioModule } from './minio/minio.module'
+import { UploadModule } from './upload/upload.module'
 
 @Module({
   imports: [
@@ -20,7 +22,9 @@ import { AuthGuard } from '../common/guard/auth.guard'
       name: CUSTOMPRISMASERVICE,
       isGlobal: true,
       useClass: ExtendedPrismaConfigService
-    })
+    }),
+    MinioModule,
+    UploadModule
   ],
   providers: [
     SharedService,

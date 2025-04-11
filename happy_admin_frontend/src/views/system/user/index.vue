@@ -120,7 +120,7 @@ const {
           <el-button
             type="primary"
             :icon="useRenderIcon(AddFill)"
-            @click="openDialog(OPERATION_TYPE.CREATE)"
+            @click="openDialog(OPERATION_TYPE.CREATE, {})"
           >
             新增用户
           </el-button>
